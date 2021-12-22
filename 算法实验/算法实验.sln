@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "实验5 （图）", "图\�
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "实验6（查找）", "实验6（查找）\实验6（查找）.vcxproj", "{8FDE22D3-B4F6-4967-96F3-0348B6F0C21B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "实验6（哈希）", "实验6（哈希）\实验6（哈希）.vcxproj", "{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -141,6 +143,14 @@ Global
 		{8FDE22D3-B4F6-4967-96F3-0348B6F0C21B}.Release|x64.Build.0 = Release|x64
 		{8FDE22D3-B4F6-4967-96F3-0348B6F0C21B}.Release|x86.ActiveCfg = Release|Win32
 		{8FDE22D3-B4F6-4967-96F3-0348B6F0C21B}.Release|x86.Build.0 = Release|Win32
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Debug|x64.ActiveCfg = Debug|x64
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Debug|x64.Build.0 = Debug|x64
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Debug|x86.ActiveCfg = Debug|Win32
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Debug|x86.Build.0 = Debug|Win32
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Release|x64.ActiveCfg = Release|x64
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Release|x64.Build.0 = Release|x64
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Release|x86.ActiveCfg = Release|Win32
+		{EEE04F9B-72AF-456B-AFDE-C8D2202AD5C1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
