@@ -372,11 +372,6 @@ void print(int arr[SIZE + 1]){
 	cout << endl;
 }
 
-//int main(void){
-//	int arr[SIZE] = { 21, 25, 8, 25, 16, 49 };
-//	Sort::heapSort(arr);
-//	return 0;
-//}
 
 
 int main(void){
