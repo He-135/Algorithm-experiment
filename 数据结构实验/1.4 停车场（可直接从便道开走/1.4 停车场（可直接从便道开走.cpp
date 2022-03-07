@@ -1,3 +1,6 @@
+//基于1.3
+//汽车可以直接从便道上开走，此时排在它前面的汽车要先开走让路，然后再依次排到队尾。
+
 #include <iostream>
 
 using namespace std;
@@ -131,7 +134,7 @@ public:
 	int getSize() {
 		return this->count;
 	}
-	Car front(){
+	Car front() {
 		return top->next->data;
 	}
 };
@@ -171,7 +174,7 @@ int main(void) {
 			if (!s.full(temp.getType())) {//车场还没停满
 				cnt++;
 				cout << "\t" << num << "号车进入停车场，停放在第" << cnt << "个" << endl;
-				for(int i = 0; i < temp.getType(); i++){
+				for (int i = 0; i < temp.getType(); i++) {
 					s.push(temp);
 				}
 			}
@@ -181,39 +184,55 @@ int main(void) {
 			}
 		}
 		else if (status == 'D') {//车辆离开
-			MyStack<Car>temp;//在要离开的车之后开入的车辆先退出停车场为它让路
-			while (!s.empty() && s.getTop().getNum() != num) {//找到要离开的车的信息
-				temp.push(s.getTop());
-				s.pop();
-			}
-			if (s.empty()) {//未找到要离开的车的信息
-				cout << "该辆车不在停车场内" << endl;
-				while (!temp.empty()) {//退出的车重新进入停车场
-					s.push(temp.getTop());
-					temp.pop();
+			//先判断是否是便道上的车要离开
+			int cnt = q.getSize();
+			bool find = false;//用于判断是否在便道上找到
+			for(int i = 0; i < cnt; i++){
+				if(q.front().getNum() == num){
+					find = true;
+					cout << "\t" << num << "号车从便道上离开" << endl;
+					q.DeQueue();
+					break;
+				}
+				else{
+					q.EnQueue(q.DeQueue());//排在前面的汽车要先开走让路，然后再依次排到队尾
 				}
 			}
-			else {//此时已找到目标车辆，在栈顶
-				cnt--;
-				int stayTime = time - s.getTop().getArriveTime();
-				int fee = (stayTime) * s.getTop().getType() * FEE;//不同车型收费不同
-				cout << "\t" << s.getTop().getNum() << "号车离开停车场" << endl;
-				cout << "\t停留时间：" << stayTime << endl;
-				cout << "\t收费" << fee << "元" << endl;
-				while (s.getTop().getNum() == num) {//车辆驶出停车场
+			if(!find){//如果便道上没找到，则可能在停车场内
+				MyStack<Car>temp;//在要离开的车之后开入的车辆先退出停车场为它让路
+				while (!s.empty() && s.getTop().getNum() != num) {//找到要离开的车的信息
+					temp.push(s.getTop());
 					s.pop();
 				}
-				while (!temp.empty()) {//退出的车重新进入停车场
-					s.push(temp.getTop());
-					temp.pop();
+				if (s.empty()) {//未找到要离开的车的信息
+					cout << "该辆车不在停车场内" << endl;
+					while (!temp.empty()) {//退出的车重新进入停车场
+						s.push(temp.getTop());
+						temp.pop();
+					}
 				}
-				if (!q.empty() && !s.full(q.front().getType())) {//若便道上有车（q不为空）且停车场内能停放下便道上的第一辆车则可进入一辆车
-					Car c = q.DeQueue();//便道上第一辆车
-					c.setArriveTime(time);//前一辆车走的时间就是这辆车进入的时间
-					cnt++;
-					cout << endl << "\t" << c.getNum() << "号车进入停车场，停放在第" << cnt << "个" << endl;
-					for (int i = 0; i < c.getType(); i++) {
-						s.push(c);
+				else {//此时已找到目标车辆，在栈顶
+					cnt--;
+					int stayTime = time - s.getTop().getArriveTime();
+					int fee = (stayTime)*s.getTop().getType() * FEE;//不同车型收费不同
+					cout << "\t" << s.getTop().getNum() << "号车离开停车场" << endl;
+					cout << "\t停留时间：" << stayTime << endl;
+					cout << "\t收费" << fee << "元" << endl;
+					while (s.getTop().getNum() == num) {//车辆驶出停车场
+						s.pop();
+					}
+					while (!temp.empty()) {//退出的车重新进入停车场
+						s.push(temp.getTop());
+						temp.pop();
+					}
+					if (!q.empty() && !s.full(q.front().getType())) {//若便道上有车（q不为空）且停车场内能停放下便道上的第一辆车则可进入一辆车
+						Car c = q.DeQueue();//便道上第一辆车
+						c.setArriveTime(time);//前一辆车走的时间就是这辆车进入的时间
+						cnt++;
+						cout << endl << "\t" << c.getNum() << "号车进入停车场，停放在第" << cnt << "个" << endl;
+						for (int i = 0; i < c.getType(); i++) {
+							s.push(c);
+						}
 					}
 				}
 			}
