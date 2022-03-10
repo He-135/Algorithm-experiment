@@ -16,7 +16,8 @@ using namespace std;
 #define TRUCK 6
 
 //每个车位单位时间收费金额
-#define FEE 5
+#define PARKINGLOT_FEE 5
+#define SIDEWAY_FEE 2
 
 template <typename T>
 class MyStack {
@@ -80,6 +81,7 @@ private:
 	int num;
 	int arriveTime;
 	int type;
+	int timeInSideWay = 0;
 public:
 	Car() :Car(0, 0, 2) {}
 	Car(int num, int arriveTime, int type) :num(num), arriveTime(arriveTime), type(type) {}
@@ -87,6 +89,8 @@ public:
 	int getArriveTime(void) { return this->arriveTime; }
 	int getType(void) { return this->type; }
 	void setArriveTime(int time) { this->arriveTime = time; }
+	int getTimeInSideWay() { return this->timeInSideWay; }
+	void setTimeInSideWay(int time) { this->timeInSideWay = time; }
 };
 
 class ListNode {
@@ -186,18 +190,22 @@ int main(void) {
 			//先判断是否是便道上的车要离开
 			int cnt = q.getSize();
 			bool find = false;//用于判断是否在便道上找到
-			for(int i = 0; i < cnt; i++){
-				if(q.front().getNum() == num){
+			for (int i = 0; i < cnt; i++) {
+				if (q.front().getNum() == num) {
 					find = true;
+					Car tempCar = q.front();
+					tempCar.setTimeInSideWay(time - tempCar.getArriveTime());
 					cout << "\t" << num << "号车从便道上离开" << endl;
+					cout << "\t便道上停留时间：" << tempCar.getTimeInSideWay() << endl;
+					cout << "\t收费" << tempCar.getTimeInSideWay() * SIDEWAY_FEE << "元" << endl;
 					q.DeQueue();
 					break;
 				}
-				else{
+				else {
 					q.EnQueue(q.DeQueue());//排在前面的汽车要先开走让路，然后再依次排到队尾
 				}
 			}
-			if(!find){//如果便道上没找到，则可能在停车场内
+			if (!find) {//如果便道上没找到，则可能在停车场内
 				MyStack<Car>temp;//在要离开的车之后开入的车辆先退出停车场为它让路
 				while (!s.empty() && s.getTop().getNum() != num) {//找到要离开的车的信息
 					temp.push(s.getTop());
@@ -212,11 +220,15 @@ int main(void) {
 				}
 				else {//此时已找到目标车辆，在栈顶
 					cnt--;
-					int stayTime = time - s.getTop().getArriveTime();
-					int fee = (stayTime)*s.getTop().getType() * FEE;//不同车型收费不同
-					cout << "\t" << s.getTop().getNum() << "号车离开停车场" << endl;
-					cout << "\t停留时间：" << stayTime << endl;
-					cout << "\t收费" << fee << "元" << endl;
+					Car c_temp = s.getTop();
+					int timeInParkingLot = time - c_temp.getArriveTime();
+					//不同车型收费不同且便道上停留也要收费
+					int fee = c_temp.getTimeInSideWay() * c_temp.getType() * SIDEWAY_FEE +
+						timeInParkingLot * c_temp.getType() * PARKINGLOT_FEE;
+					cout << "\t" << c_temp.getNum() << "号车离开停车场" << endl;
+					cout << "\t便道上停留时间：" << c_temp.getTimeInSideWay() << endl;
+					cout << "\t停车场内停留时间：" << timeInParkingLot << endl;
+					cout << "\t共收费" << fee << "元" << endl;
 					while (!s.empty() && s.getTop().getNum() == num) {//车辆驶出停车场
 						s.pop();
 					}
@@ -226,6 +238,7 @@ int main(void) {
 					}
 					if (!q.empty() && !s.full(q.front().getType())) {//若便道上有车（q不为空）且停车场内能停放下便道上的第一辆车则可进入一辆车
 						Car c = q.DeQueue();//便道上第一辆车
+						c.setTimeInSideWay(time - c.getArriveTime());
 						c.setArriveTime(time);//前一辆车走的时间就是这辆车进入的时间
 						cnt++;
 						cout << endl << "\t" << c.getNum() << "号车进入停车场，停放在第" << cnt << "个" << endl;
