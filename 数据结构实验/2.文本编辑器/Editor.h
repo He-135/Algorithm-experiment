@@ -34,4 +34,5 @@ public:
 	void AddText(string s);
 	void print();
 	void setCursor();
+	void search(string s);
 };

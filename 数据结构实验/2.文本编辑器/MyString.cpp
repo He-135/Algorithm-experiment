@@ -19,21 +19,21 @@ MyString::MyString(string s, int& CharCount, int& PunctuationCount, int& BlankCo
 MyString::~MyString() {
   if (!str) { delete[]str; }
 }
-int MyString::Index(MyString s, MyString t, int pos) {//从第pos个元素开始寻找
-  if (s.length == 0 || t.length == 0 || s.length - pos + 1 < t.length) {
+int MyString::Index(string t, int pos) {//从第pos个元素开始寻找
+  if (this->length - pos + 1 < t.length()) {
     return -1;
   }
-  int i = pos;
-  int j = 1;
-  while (i <= s.length && j <= t.length) {
-    if (s.str[i] == t.str[j]) {
+  int i = pos+1;
+  int j = 0;
+  while (i <= this->length && j < t.length()) {
+    if (this->str[i] == t[j]) {
       i++;
       j++;
     }
-    else { i = i - j + 2; j = 1; }
+    else { i = i - j + 1; j = 0; }
   }
-  if (j > t.length) {
-    return i - j + 1;
+  if (j >= t.length()) {
+    return i - 1 - j;
   }
   return -1;
 }
