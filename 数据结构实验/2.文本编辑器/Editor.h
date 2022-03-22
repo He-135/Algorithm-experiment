@@ -14,11 +14,13 @@ public:
 };
 
 class Cursor{
+//colum取值：
+//-1——该行的末尾
+//0——该行的开头
+//1——在该行的第一个字符之后
 public:
 	int line = 0;//光标所在行数
 	int column = -1;//光标所在列数
-	//column默认为-1表示光标文章的最后
-	//column = 1表示在该行的第一个字符之后
 };
 
 class Editor{
@@ -31,8 +33,10 @@ private:
 	Cursor cursor;
 public:
 	Editor() = default;
+	~Editor();
 	void AddText(string s);
 	void print();
 	void setCursor();
 	void search(string s);
+	void del(int cnt);
 };

@@ -1,14 +1,23 @@
 #include "Editor.h"
 
 void Editor::AddText(string s){
+	//先找到光标所在行
+	Node* p = this->head;
+	//if(p->next == NULL){//文档为空，编辑器为刚启用状态
+	//	Node* temp = new Node(s, CharCount, PunctuationCount, BlankCount);
+	//	p->next = temp;
+	//	line++;
+	//	cursor.line++;
+	//	cursor.column = -1;//初始时为0，插入文本后要设置到末尾
+	//	return;
+	//}
+	int tempLine = 0;
+	while (p->next != nullptr && tempLine != cursor.line) {
+		p = p->next;
+		tempLine++;
+	}
 	if(cursor.column == -1){//光标在某一行末尾
  		Node* temp = new Node(s, CharCount, PunctuationCount, BlankCount);
-		Node* p = this->head;
-		int tempLine = 0;
-		while (p->next != nullptr && tempLine != cursor.line) {
-			p = p->next;
-			tempLine++;
-		}
 		if(p->next != nullptr){
 			temp->next = p->next;
 			p->next = temp;
@@ -19,15 +28,16 @@ void Editor::AddText(string s){
 		cursor.line++;
 	}
 	else{//不在末尾
-		Node* p = this->head;
-		int tempLine = 0;
-		while (p->next != nullptr && tempLine != cursor.line) {
-			p = p->next;
-			tempLine++;
-		}
-		//找到了光标所在的行
 		p->s->Insert(s, cursor.column, CharCount, PunctuationCount, BlankCount);
 		cursor.column += s.size();
+	}
+}
+
+Editor::~Editor(){
+	while(head != NULL){
+		Node* temp = head->next;
+		delete head;
+		head = temp;
 	}
 }
 
@@ -35,9 +45,9 @@ void Editor::print(){
 	cout << endl << "->【文章内容（'{}'为光标位置）】<-" << endl;
 	Node* p = head->next;
 	int i = 1;
-	if (p == NULL) { cout << endl << i << "\t{}"; }
+	if (p == NULL) { cout << endl << i << "\t{}"; }//说明此时文本为空
 	while(p != nullptr){
-		if(cursor.line != i){//光标还在第i行
+		if(cursor.line != i){//光标不在第i行
 			cout << endl << i << "\t" << p->s->getContent();
 		}
 		else{
@@ -69,10 +79,14 @@ void Editor::print(){
 }
 
 void Editor::setCursor(){
-	cout << "\t" << "输入光标所在行数：";
+	if(line == 0){//文档为空，无法设置光标位置
+		cout << "\t当前文档为空，无法设置" << endl;
+		return;
+	}
+	cout << "\t输入光标所在行数：";
 	cin >> cursor.line;
 	while(cursor.line < 1 || cursor.line > line){
-		cout << "\t" << "输入不合法，请重新输入：";
+		cout << "\t输入不合法，请重新输入：";
 		cin >> cursor.line;
 	}
 	Node* p = this->head;
@@ -81,10 +95,10 @@ void Editor::setCursor(){
 		p = p->next;
 		tempLine++;
 	}
-	cout << "\t" << "输入光标在第几个字符后（0——开头，-1——末尾）：";
+	cout << "\t输入光标在第几个字符后（0——开头，-1——末尾）：";
 	cin >> cursor.column;
-	while(cursor.column < -1 || cursor.column >= p->s->length){
-		cout << "\t" << "输入不合法，请重新输入：";
+	while(cursor.column < -1 || cursor.column >= p->s->getLength()){
+		cout << "\t输入不合法，请重新输入：";
 		cin >> cursor.column;
 	}
 }
@@ -92,7 +106,7 @@ void Editor::setCursor(){
 void Editor::search(string s){
 	Node* p = this->head;
 	if(p->next == NULL){
-		cout << "\t" << "文档为空，查找失败！" << endl;
+		cout << "\t文档为空，查找失败！" << endl;
 		return;
 	}
 	int tempLine = 0;//用于找到光标所在行
@@ -133,4 +147,43 @@ void Editor::search(string s){
 		cout << "\t" << s << "：第" << tempLine << "行开头" << endl;
 	else
 		cout << "\t" << s << "：第" << tempLine << "行第" << pos << "个字符后" << endl;
+}
+
+void Editor::del(int cnt){
+	if(cursor.column == -1){//光标在该行的末尾
+		cout << "\t光标位置异常，删除失败！" << endl;
+		return;
+	}
+	Node* p = this->head;
+	if (p->next == NULL) {
+		cout << "\t文档为空，删除失败！" << endl;
+		return;
+	}
+	int tempLine = 0;//用于找到光标所在行
+	Node* pre = NULL;//光标所在行的前一行
+	while (p->next != nullptr && tempLine != cursor.line) {
+		if (tempLine + 1 == cursor.line)
+			pre = p;
+		p = p->next;
+		tempLine++;
+	}
+	if (cnt == 0)//要删除该行光标后的所有字符
+		cnt = p->s->getLength() - cursor.column;
+	else if(p->s->getLength() - cursor.column < cnt){//要删除的过多
+		cout << "\t输入数量有误，删除失败！" << endl;
+		return;
+	}
+	p->s->del(cursor.column, cnt, CharCount, PunctuationCount, BlankCount);
+	if(p->s->getLength() == 0 && p->next == NULL){//如果是最后一行没有字符了，则光标要移动到上一行的末尾
+		pre->next = NULL;
+		delete p;
+		line--;
+		cursor.line--;
+		cursor.column = -1;
+	}
+	else if(p->s->getLength() == 0){//光标还在最后一行且所在行已经没有字符了，可以将该行删除
+		pre->next = p->next;
+		delete p;
+		line--;
+	}
 }

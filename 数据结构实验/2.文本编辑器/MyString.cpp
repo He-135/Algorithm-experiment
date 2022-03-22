@@ -19,6 +19,11 @@ MyString::MyString(string s, int& CharCount, int& PunctuationCount, int& BlankCo
 MyString::~MyString() {
   if (!str) { delete[]str; }
 }
+
+int MyString::getLength(){
+  return this->length;
+}
+
 int MyString::Index(string t, int pos) {//从第pos个元素开始寻找
   if (this->length - pos + 1 < t.length()) {
     return -1;
@@ -74,4 +79,28 @@ void MyString::Insert(string s, int pos, int& CharCount, int& PunctuationCount, 
   for (int k = 1; k <= length; k++) {
     str[k] = temp_s[k - 1];
   }
+}
+
+void MyString::del(int pos, int cnt, int& CharCount, int& PunctuationCount, int& BlankCount){
+  char* temp = str;
+  str = new char[this->length - cnt + 1];
+  this->length = length - cnt;
+  int i = 0;
+  for(; i < pos; i++){//循环结束时就到了光标所在的位置
+    str[i + 1] = temp[i + 1];
+  }
+  for (; i < this->length; i++) {
+    str[i + 1] = temp[i + 1 + cnt];
+  }
+  for(int j = pos; j < pos + cnt; j++){
+    if (temp[j + 1] >= '0' && temp[j + 1] <= '9' ||
+      temp[j + 1] > 'a' && temp[j + 1] < 'z' ||
+      temp[j + 1]>'A' && temp[j + 1] < 'Z')
+      CharCount--;
+    else if (ispunct(temp[j + 1]))
+      PunctuationCount--;
+    else if (temp[j + 1] == ' ')
+      BlankCount--;
+  }
+  delete[] temp;
 }
