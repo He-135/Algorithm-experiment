@@ -8,7 +8,7 @@ private:
   char* str = nullptr;
   int length = 0;//用来记录数组长度
 public:
-  MyString() = default;
+  MyString(string s);
   MyString(string s, int& CharCount, int& PunctuationCount, int& BlankCount);
   ~MyString();
   int getLength();
@@ -16,4 +16,5 @@ public:
   string getContent();
   void Insert(string s, int pos, int& CharCount, int& PunctuationCount, int& BlankCount);//在第pos个字符后插入字符串
   void del(int pos, int cnt, int& CharCount, int& PunctuationCount, int& BlankCount);
+  void split(int pos, string& s1, string& s2);
 };

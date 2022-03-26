@@ -16,6 +16,16 @@ MyString::MyString(string s, int& CharCount, int& PunctuationCount, int& BlankCo
       BlankCount++;
   }
 }
+
+MyString::MyString(string s){
+  str = new char[s.length() + 1];
+  str[0] = 0;//µÚ0ºÅ¿Õ³ö
+  length = s.length();
+  for (int i = 1; i <= length; i++) {
+    str[i] = s[i - 1];
+  }
+}
+
 MyString::~MyString() {
   if (!str) { delete[]str; }
 }
@@ -103,4 +113,14 @@ void MyString::del(int pos, int cnt, int& CharCount, int& PunctuationCount, int&
       BlankCount--;
   }
   delete[] temp;
+}
+
+void MyString::split(int pos, string& s1, string& s2){
+  for(int i = 1; i <= pos; i++){
+    s1 += str[i];
+  }
+  for (int i = pos + 1; i <= length; i++) {
+    s2 += str[i];
+  }
+
 }

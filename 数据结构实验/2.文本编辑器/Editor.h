@@ -11,6 +11,9 @@ public:
 	Node(string s, int& CharCount, int& PunctuationCount, int& BlankCount){
 		this->s = new MyString(s, CharCount, PunctuationCount, BlankCount);
 	}
+	Node(string s){
+		this->s = new MyString(s);
+	}
 };
 
 class Cursor{
@@ -37,6 +40,8 @@ public:
 	void AddText(string s);
 	void print();
 	void setCursor();
-	void search(string s);
-	void del(int cnt);
+	void search();
+	void del();
+	void enter_add();
+	void enter_del();
 };

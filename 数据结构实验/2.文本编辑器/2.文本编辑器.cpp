@@ -12,6 +12,8 @@ int main(void){
     cout << "2.设置光标位置" << endl;
     cout << "3.查找（从光标处开始往后查找）" << endl;
     cout << "4.删除文本（从光标处往后）" << endl;
+    cout << "5.添加回车" << endl;
+    cout << "6.删除回车" << endl;
     cout << "0.退出" << endl;
     cout << "---------------------------------------" << endl;
     cout << "请选择:";
@@ -30,16 +32,16 @@ int main(void){
         e.setCursor();
         break;
       case 3:
-        cout << "\t快速查找：";
-        cin.get();
-        getline(cin, s);
-        e.search(s);
+        e.search();
         break;
       case 4:
-        cout << "\t要删除的字符数（0——删除从光标到该行末尾的全部字符）：";
-        int cnt;
-        cin >> cnt;
-        e.del(cnt);
+        e.del();
+        break;
+      case 5:
+        e.enter_add();
+        break;
+      case 6:
+        e.enter_del();
         break;
       default:
         cout << "输入错误，请重新输入" << endl;
