@@ -260,6 +260,70 @@ void Editor::enter_add(){
 	cursor.column = 0;
 }
 
-void Editor::enter_del(){
-
+void Editor::enter_del() {
+	if (head->next == NULL)//文档为空
+		return;
+	//找到光标所在行
+	Node* p = this->head;
+	int tempLine = 0;//用于找到光标所在行
+	Node* pre = NULL;//光标所在行的前一行
+	while (p->next != nullptr && tempLine != cursor.line) {
+		if (tempLine + 1 == cursor.line)
+			pre = p;
+		p = p->next;
+		tempLine++;
+	}
+	if (cursor.line == 1 && p->s->getLength() == 0 && p->next != NULL) {//在第一行且空行且下文不为空
+		pre->next = p->next;
+		delete p;
+		cursor.column = 0;
+		line--;
+		return;
+	}
+	else if (cursor.line == 1 && ((p->s->getLength() == 0 && p->next == NULL)//在第一行空行且下文不为空
+		|| (p->s->getLength() != 0 && cursor.column == 0)))//在第一行非空且光标在开头
+		return;
+	else if (cursor.line == line && p->s->getLength() != 0 && cursor.column == -1)//最后一行非空且光标位于末尾
+		return;
+	else if (p->s->getLength() == 0) {//光标在空行
+		pre->next = p->next;
+		cursor.column = -1;//移动到上一行末尾
+		cursor.line--;
+		line--;
+		return;
+	}
+	else if (cursor.column != -1 && cursor.column != 0) {//光标在行中
+		cout << "光标位置有误，删除失败！" << endl;
+		return;
+	}
+	else if(cursor.column == 0){//在除了第一行的开头,这一行要合并到上一行的后面
+		cursor.column = pre->s->getLength();
+		cursor.line--;
+		line--;
+		string s = pre->s->getContent() + p->s->getContent();
+		MyString* temp = pre->s;
+		pre->s = new MyString(s);
+		delete temp;
+		pre->next = p->next;
+		delete p;
+		return;
+	}
+	else{//在除了最后一行的结尾
+	//不是最后一行，所以p->next != nullptr
+		Node* temp = p->next;
+		if(p->next->s->getLength() == 0){//如果下一行是空行
+			p->next = p->next->next;
+			delete temp;
+		}
+		else{
+			cursor.column = p->s->getLength();
+			string s = p->s->getContent() + p->next->s->getContent();
+			MyString* temp_s = p->s;
+			p->s = new MyString(s);
+			delete temp_s;
+			p->next = p->next->next;
+			delete temp;
+		}
+		line--;
+	}
 }
