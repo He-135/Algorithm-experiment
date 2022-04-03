@@ -4,6 +4,7 @@ using namespace std;
 
 int main(void){
   Editor e;
+  e.read_file();
   int choose;
   do{
     e.print();
@@ -14,13 +15,14 @@ int main(void){
     cout << "4.删除文本（从光标处往后）" << endl;
     cout << "5.添加回车" << endl;
     cout << "6.删除回车" << endl;
-    cout << "0.退出" << endl;
+    cout << "0.保存并退出" << endl;
     cout << "---------------------------------------" << endl;
     cout << "请选择:";
     cin >> choose;
     string s;
     switch (choose) {
       case 0:
+        e.save();
         return 0;
       case 1:
         cout << "\t" << "请输入内容：";

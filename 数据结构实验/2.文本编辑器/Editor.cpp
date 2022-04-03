@@ -21,7 +21,7 @@ void Editor::AddText(string s){
 		return;
 	}
 	if(cursor.column == -1){//光标在某一行末尾
- 		Node* temp = new Node(s, CharCount, PunctuationCount, BlankCount);
+ 		/*Node* temp = new Node(s, CharCount, PunctuationCount, BlankCount);
 		if(p->next != nullptr){
 			temp->next = p->next;
 			p->next = temp;
@@ -29,7 +29,8 @@ void Editor::AddText(string s){
 		else
 			p->next = temp;
 		line++;
-		cursor.line++;
+		cursor.line++;*/
+		p->s->Insert(s, p->s->getLength(), CharCount, PunctuationCount, BlankCount);
 	}
 	else{//不在末尾
 		p->s->Insert(s, cursor.column, CharCount, PunctuationCount, BlankCount);
@@ -325,5 +326,31 @@ void Editor::enter_del() {
 			delete temp;
 		}
 		line--;
+	}
+}
+
+void Editor::save(){
+	fstream ofs;
+	ofs.open("text.txt", std::ios::out);
+	Node* p = head->next;
+	while(p != NULL){
+		ofs << endl << p->s->getContent();
+		p = p->next;
+	}
+	ofs.close();
+	cout << "保存成功！" << endl;
+}
+void Editor::read_file(){
+	fstream ifs;
+	ifs.open("text.txt", ios::in);
+	if (ifs.is_open()) {
+		string s;
+		getline(ifs, s);//跳过第一行
+		while (!ifs.eof()) {
+			getline(ifs, s);
+			AddText(s);
+			enter_add();
+		}
+		enter_del();
 	}
 }

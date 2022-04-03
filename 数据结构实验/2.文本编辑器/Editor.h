@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "MyString.h"
 using namespace std;
 
@@ -44,4 +45,6 @@ public:
 	void del();
 	void enter_add();
 	void enter_del();
+	void save();
+	void read_file();
 };
